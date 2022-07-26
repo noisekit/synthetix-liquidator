@@ -1,13 +1,13 @@
 {
-	"name": "mainnet-ovm-liquidator",
+	"name": "liquidator-optimism",
 	"license": "UNLICENSED",
 	"scripts": {
 		"codegen": "graph codegen",
 		"build": "graph build",
-		"deploy": "graph deploy --node https://api.thegraph.com/deploy/ noisekit/mainnet-ovm-liquidator",
-		"create-local": "graph create --node http://localhost:8020/ noisekit/mainnet-ovm-liquidator",
-		"remove-local": "graph remove --node http://localhost:8020/ noisekit/mainnet-ovm-liquidator",
-		"deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 noisekit/mainnet-ovm-liquidator",
+		"deploy": "graph deploy --node https://api.thegraph.com/deploy/ noisekit/liquidator-optimism",
+		"create-local": "graph create --node http://localhost:8020/ noisekit/liquidator-optimism",
+		"remove-local": "graph remove --node http://localhost:8020/ noisekit/liquidator-optimism",
+		"deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 noisekit/liquidator-optimism",
 		"test": "graph test"
 	},
 	"dependencies": {
