@@ -1,7 +1,7 @@
 {
-  "optimism": {
-    "Liquidator": {
-      "address": "0x68a8b098967Ae077dcFf5cC8E29B7cb15f1A3cC8"
-    }
-  }
+	"optimism": {
+		"Liquidator": {
+			"address": "0x68a8b098967Ae077dcFf5cC8E29B7cb15f1A3cC8"
+		}
+	}
 }

@@ -1,56 +1,81 @@
 import {
-  assert,
-  describe,
-  test,
-  clearStore,
-  beforeAll,
-  afterAll,
-} from "matchstick-as/assembly/index";
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { StakerEntity } from "../generated/schema";
-import { AccountFlaggedForLiquidation } from "../generated/Liquidator/Liquidator";
-import { handleAccountFlaggedForLiquidation } from "../src/liquidator";
-import { createAccountFlaggedForLiquidationEvent } from "./liquidator-utils";
+	assert,
+	describe,
+	test,
+	clearStore,
+	beforeAll,
+	afterAll,
+} from 'matchstick-as/assembly/index';
+import { Address, BigInt, Bytes } from '@graphprotocol/graph-ts';
+import { StakerEntity } from '../generated/schema';
+import { AccountFlaggedForLiquidation } from '../generated/Liquidator/Liquidator';
+import {
+	handleAccountFlaggedForLiquidation,
+	handleAccountRemovedFromLiquidation,
+} from '../src/liquidator';
+import {
+	createAccountFlaggedForLiquidationEvent,
+	createAccountRemovedFromLiquidationEvent,
+} from './liquidator-utils';
 
-// Tests structure (matchstick-as >=0.5.0)
-// https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
+// 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
+const ID = '0xa16081f360e3847006db660bae1c6d1b2e17ec2a';
+const ADDRESS = '0x0000000000000000000000000000000000000001';
 
-describe("Describe entity assertions", () => {
-  beforeAll(() => {
-    let account = Address.fromString(
-      "0x0000000000000000000000000000000000000001"
-    );
-    let deadline = BigInt.fromI32(234);
-    let newAccountFlaggedForLiquidationEvent =
-      createAccountFlaggedForLiquidationEvent(account, deadline);
-    handleAccountFlaggedForLiquidation(newAccountFlaggedForLiquidationEvent);
-  });
+describe('Describe entity assertions', () => {
+	test('StakerEntity marked for liquidation is created and stored', () => {
+		handleAccountFlaggedForLiquidation(
+			createAccountFlaggedForLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(234))
+		);
 
-  afterAll(() => {
-    clearStore();
-  });
+		assert.entityCount('StakerEntity', 1);
+		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ID, 'count', '1');
+		assert.fieldEquals('StakerEntity', ID, 'deadline', '234');
+		assert.fieldEquals('StakerEntity', ID, 'time', 'null');
+		assert.fieldEquals('StakerEntity', ID, 'flagged', 'true');
 
-  // For more test scenarios, see:
-  // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
+		clearStore();
+	});
 
-  test("StakerEntity created and stored", () => {
-    assert.entityCount("StakerEntity", 1);
+	test('StakerEntity unmarked for liquidation is created and stored', () => {
+		handleAccountRemovedFromLiquidation(
+			createAccountRemovedFromLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(567))
+		);
 
-    // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
-    assert.fieldEquals(
-      "StakerEntity",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
-      "account",
-      "0x0000000000000000000000000000000000000001"
-    );
-    assert.fieldEquals(
-      "StakerEntity",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a",
-      "deadline",
-      "234"
-    );
+		assert.entityCount('StakerEntity', 1);
+		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ID, 'count', '1');
+		assert.fieldEquals('StakerEntity', ID, 'deadline', 'null');
+		assert.fieldEquals('StakerEntity', ID, 'time', '567');
+		assert.fieldEquals('StakerEntity', ID, 'flagged', 'false');
 
-    // More assert options:
-    // https://thegraph.com/docs/en/developer/matchstick/#asserts
-  });
+		clearStore();
+	});
+
+	test('StakerEntity marked and then unmarked for liquidation is created and stored', () => {
+		handleAccountFlaggedForLiquidation(
+			createAccountFlaggedForLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(234))
+		);
+
+		assert.entityCount('StakerEntity', 1);
+		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ID, 'count', '1');
+		assert.fieldEquals('StakerEntity', ID, 'deadline', '234');
+		assert.fieldEquals('StakerEntity', ID, 'time', 'null');
+		assert.fieldEquals('StakerEntity', ID, 'flagged', 'true');
+
+		handleAccountRemovedFromLiquidation(
+			createAccountRemovedFromLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(567))
+		);
+
+		assert.entityCount('StakerEntity', 1);
+		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ID, 'count', '2');
+		assert.fieldEquals('StakerEntity', ID, 'deadline', 'null');
+		assert.fieldEquals('StakerEntity', ID, 'time', '567');
+		assert.fieldEquals('StakerEntity', ID, 'flagged', 'false');
+
+		clearStore();
+	});
 });

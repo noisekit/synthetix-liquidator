@@ -1,18 +1,41 @@
 {
-  "name": "mainnet-ovm-liquidator",
-  "license": "UNLICENSED",
-  "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ noisekit/mainnet-ovm-liquidator",
-    "create-local": "graph create --node http://localhost:8020/ noisekit/mainnet-ovm-liquidator",
-    "remove-local": "graph remove --node http://localhost:8020/ noisekit/mainnet-ovm-liquidator",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 noisekit/mainnet-ovm-liquidator",
-    "test": "graph test"
-  },
-  "dependencies": {
-    "@graphprotocol/graph-cli": "0.33.0",
-    "@graphprotocol/graph-ts": "0.27.0"
-  },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+	"name": "mainnet-ovm-liquidator",
+	"license": "UNLICENSED",
+	"scripts": {
+		"codegen": "graph codegen",
+		"build": "graph build",
+		"deploy": "graph deploy --node https://api.thegraph.com/deploy/ noisekit/mainnet-ovm-liquidator",
+		"create-local": "graph create --node http://localhost:8020/ noisekit/mainnet-ovm-liquidator",
+		"remove-local": "graph remove --node http://localhost:8020/ noisekit/mainnet-ovm-liquidator",
+		"deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 noisekit/mainnet-ovm-liquidator",
+		"test": "graph test"
+	},
+	"dependencies": {
+		"@graphprotocol/graph-cli": "0.33.0",
+		"@graphprotocol/graph-ts": "0.27.0"
+	},
+	"devDependencies": {
+		"matchstick-as": "0.5.0"
+	},
+	"prettier": {
+		"useTabs": true,
+		"printWidth": 100,
+		"semi": true,
+		"singleQuote": true,
+		"trailingComma": "es5",
+		"overrides": [
+			{
+				"files": "*.md",
+				"options": {
+					"useTabs": false
+				}
+			}
+		],
+		"cli": {
+			"ignorePath": [
+				"build/",
+				"generated/"
+			]
+		}
+	}
 }

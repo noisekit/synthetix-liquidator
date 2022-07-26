@@ -6,7 +6,7 @@ dataSources:
     name: Liquidator
     network: optimism
     source:
-      address: "0x68a8b098967Ae077dcFf5cC8E29B7cb15f1A3cC8"
+      address: '0x68a8b098967Ae077dcFf5cC8E29B7cb15f1A3cC8'
       abi: Liquidator
     mapping:
       kind: ethereum/events
