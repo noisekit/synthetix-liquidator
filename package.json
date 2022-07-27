@@ -2,13 +2,19 @@
 	"name": "liquidator-optimism",
 	"license": "UNLICENSED",
 	"scripts": {
-		"codegen": "graph codegen",
-		"build": "graph build",
-		"deploy": "graph deploy --node https://api.thegraph.com/deploy/ noisekit/liquidator-optimism",
-		"create-local": "graph create --node http://localhost:8020/ noisekit/liquidator-optimism",
-		"remove-local": "graph remove --node http://localhost:8020/ noisekit/liquidator-optimism",
-		"deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 noisekit/liquidator-optimism",
-		"test": "graph test"
+		"create-local": "graph create --node http://localhost:8020/ noisekit/liquidator",
+		"remove-local": "graph remove --node http://localhost:8020/ noisekit/liquidator",
+		"deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 noisekit/liquidator",
+		"optimism": "rm -rf subgraph.yaml && ln -s subgraph.optimism.yaml subgraph.yaml",
+		"optimism-kovan": "rm -rf subgraph.yaml && ln -s subgraph.optimism-kovan.yaml subgraph.yaml",
+		"codegen:optimism": "yarn optimism && graph codegen",
+		"build:optimism": "yarn optimism && graph build",
+		"deploy:optimism": "yarn optimism && graph deploy --node https://api.thegraph.com/deploy/ noisekit/liquidator-optimism",
+		"test:optimism": "yarn optimism && graph test",
+		"codegen:optimism-kovan": "yarn optimism-kovan && graph codegen",
+		"build:optimism-kovan": "yarn optimism-kovan && graph build",
+		"deploy:optimism-kovan": "yarn optimism-kovan && graph deploy --node https://api.thegraph.com/deploy/ noisekit/liquidator-optimism-kovan",
+		"test:optimism-kovan": "yarn optimism-kovan && graph test"
 	},
 	"dependencies": {
 		"@graphprotocol/graph-cli": "0.33.0",

@@ -1,0 +1,35 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Liquidator
+    network: optimism-kovan
+    source:
+      address: '0xE50124A0C087EC06a273D0B9886902273B02d4D8'
+      abi: Liquidator
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - AccountFlaggedForLiquidation
+        - AccountRemovedFromLiquidation
+        - CacheUpdated
+        - OwnerChanged
+        - OwnerNominated
+      abis:
+        - name: Liquidator
+          file: ./abis/Liquidator.json
+      eventHandlers:
+        - event: AccountFlaggedForLiquidation(indexed address,uint256)
+          handler: handleAccountFlaggedForLiquidation
+        - event: AccountRemovedFromLiquidation(indexed address,uint256)
+          handler: handleAccountRemovedFromLiquidation
+        - event: CacheUpdated(bytes32,address)
+          handler: handleCacheUpdated
+        - event: OwnerChanged(address,address)
+          handler: handleOwnerChanged
+        - event: OwnerNominated(address)
+          handler: handleOwnerNominated
+      file: ./src/liquidator.ts
