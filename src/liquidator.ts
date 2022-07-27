@@ -10,29 +10,22 @@ import {
 import { StakerEntity } from '../generated/schema';
 
 export function handleAccountFlaggedForLiquidation(event: AccountFlaggedForLiquidation): void {
-	// Entities can be loaded from the store using a string ID; this ID
-	// needs to be unique across all entities of the same type
-	let entity = StakerEntity.load(event.transaction.from.toHex());
+	let entity = StakerEntity.load(event.params.account.toHex());
 
-	// Entities only exist after they have been saved to the store;
-	// `null` checks allow to create entities on demand
 	if (!entity) {
-		entity = new StakerEntity(event.transaction.from.toHex());
-
-		// Entity fields can be set using simple assignments
+		entity = new StakerEntity(event.params.account.toHex());
 		entity.count = BigInt.fromI32(0);
 	}
+	entity.count = BigInt.fromI32(1).plus(entity.count);
 
 	// Flag Staker for liquidation
 	entity.flagged = true;
-
-	// BigInt and BigDecimal math are supported
-	entity.count = entity.count + BigInt.fromI32(1);
 
 	// Entity fields can be set based on event parameters
 	entity.account = event.params.account;
 	entity.deadline = event.params.deadline;
 	entity.time = null;
+	entity.from = event.transaction.from;
 
 	// Entities can be written to the store with `.save()`
 	entity.save();
@@ -77,20 +70,20 @@ export function handleAccountFlaggedForLiquidation(event: AccountFlaggedForLiqui
 }
 
 export function handleAccountRemovedFromLiquidation(event: AccountRemovedFromLiquidation): void {
-	let entity = StakerEntity.load(event.transaction.from.toHex());
+	let entity = StakerEntity.load(event.params.account.toHex());
 
 	if (!entity) {
-		entity = new StakerEntity(event.transaction.from.toHex());
+		entity = new StakerEntity(event.params.account.toHex());
 		entity.count = BigInt.fromI32(0);
 	}
+	entity.count = BigInt.fromI32(1).plus(entity.count);
 
 	entity.flagged = false;
-
-	entity.count = entity.count + BigInt.fromI32(1);
 
 	entity.account = event.params.account;
 	entity.deadline = null;
 	entity.time = event.params.time;
+	entity.from = event.transaction.from;
 
 	entity.save();
 }

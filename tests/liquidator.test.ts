@@ -19,7 +19,7 @@ import {
 } from './liquidator-utils';
 
 // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
-const ID = '0xa16081f360e3847006db660bae1c6d1b2e17ec2a';
+const FROM = '0xa16081f360e3847006db660bae1c6d1b2e17ec2a';
 const ADDRESS = '0x0000000000000000000000000000000000000001';
 
 describe('Describe entity assertions', () => {
@@ -29,11 +29,12 @@ describe('Describe entity assertions', () => {
 		);
 
 		assert.entityCount('StakerEntity', 1);
-		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
-		assert.fieldEquals('StakerEntity', ID, 'count', '1');
-		assert.fieldEquals('StakerEntity', ID, 'deadline', '234');
-		assert.fieldEquals('StakerEntity', ID, 'time', 'null');
-		assert.fieldEquals('StakerEntity', ID, 'flagged', 'true');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '1');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', '234');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'time', 'null');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'true');
 
 		clearStore();
 	});
@@ -44,11 +45,12 @@ describe('Describe entity assertions', () => {
 		);
 
 		assert.entityCount('StakerEntity', 1);
-		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
-		assert.fieldEquals('StakerEntity', ID, 'count', '1');
-		assert.fieldEquals('StakerEntity', ID, 'deadline', 'null');
-		assert.fieldEquals('StakerEntity', ID, 'time', '567');
-		assert.fieldEquals('StakerEntity', ID, 'flagged', 'false');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '1');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', 'null');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'time', '567');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'false');
 
 		clearStore();
 	});
@@ -59,22 +61,24 @@ describe('Describe entity assertions', () => {
 		);
 
 		assert.entityCount('StakerEntity', 1);
-		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
-		assert.fieldEquals('StakerEntity', ID, 'count', '1');
-		assert.fieldEquals('StakerEntity', ID, 'deadline', '234');
-		assert.fieldEquals('StakerEntity', ID, 'time', 'null');
-		assert.fieldEquals('StakerEntity', ID, 'flagged', 'true');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '1');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', '234');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'time', 'null');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'true');
 
 		handleAccountRemovedFromLiquidation(
 			createAccountRemovedFromLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(567))
 		);
 
 		assert.entityCount('StakerEntity', 1);
-		assert.fieldEquals('StakerEntity', ID, 'account', ADDRESS);
-		assert.fieldEquals('StakerEntity', ID, 'count', '2');
-		assert.fieldEquals('StakerEntity', ID, 'deadline', 'null');
-		assert.fieldEquals('StakerEntity', ID, 'time', '567');
-		assert.fieldEquals('StakerEntity', ID, 'flagged', 'false');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '2');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', 'null');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'time', '567');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'false');
 
 		clearStore();
 	});
