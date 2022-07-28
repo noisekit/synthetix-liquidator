@@ -12,10 +12,12 @@ import { AccountFlaggedForLiquidation } from '../generated/Liquidator/Liquidator
 import {
 	handleAccountFlaggedForLiquidation,
 	handleAccountRemovedFromLiquidation,
+	handleAccountLiquidated,
 } from '../src/liquidator';
 import {
 	createAccountFlaggedForLiquidationEvent,
 	createAccountRemovedFromLiquidationEvent,
+	createAccountLiquidatedEvent,
 } from './liquidator-utils';
 
 // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
@@ -38,8 +40,7 @@ describe('Describe entity assertions', () => {
 		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '1');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', '234');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'time', 'null');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '234');
 		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'true');
 	});
 
@@ -52,8 +53,7 @@ describe('Describe entity assertions', () => {
 		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '1');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', 'null');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'time', '567');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '567');
 		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'false');
 	});
 
@@ -66,8 +66,7 @@ describe('Describe entity assertions', () => {
 		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '1');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', '234');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'time', 'null');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '234');
 		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'true');
 
 		handleAccountRemovedFromLiquidation(
@@ -78,8 +77,7 @@ describe('Describe entity assertions', () => {
 		assert.fieldEquals('StakerEntity', ADDRESS, 'from', FROM);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'account', ADDRESS);
 		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '2');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'deadline', 'null');
-		assert.fieldEquals('StakerEntity', ADDRESS, 'time', '567');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '567');
 		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'false');
 	});
 
@@ -124,5 +122,48 @@ describe('Describe entity assertions', () => {
 		assert.fieldEquals('StakerEntity', ADDRESS3, 'from', FROM);
 		assert.fieldEquals('StakerEntity', ADDRESS3, 'count', '1');
 		assert.fieldEquals('StakerEntity', ADDRESS3, 'flagged', 'true');
+	});
+
+	test('account liquidation', () => {
+		handleAccountFlaggedForLiquidation(
+			createAccountFlaggedForLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(111))
+		);
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '1');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '111');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'true');
+
+		handleAccountRemovedFromLiquidation(
+			createAccountRemovedFromLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(222))
+		);
+
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '2');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '222');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'false');
+
+		handleAccountFlaggedForLiquidation(
+			createAccountFlaggedForLiquidationEvent(Address.fromString(ADDRESS), BigInt.fromI32(333))
+		);
+
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '3');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '333');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'true');
+
+		handleAccountLiquidated(
+			createAccountLiquidatedEvent(
+				Address.fromString(ADDRESS),
+				BigInt.fromI32(10),
+				BigInt.fromI32(20),
+				Address.fromString(ADDRESS2)
+			)
+		);
+
+		assert.entityCount('StakerEntity', 1);
+
+		assert.fieldEquals('StakerEntity', ADDRESS, 'count', '4');
+		// Timestamp from tx block
+		assert.fieldEquals('StakerEntity', ADDRESS, 'timestamp', '1');
+		assert.fieldEquals('StakerEntity', ADDRESS, 'flagged', 'false');
+		// Check that we use liquidator address, not the tx initiator
+		assert.fieldEquals('StakerEntity', ADDRESS, 'from', ADDRESS2);
 	});
 });

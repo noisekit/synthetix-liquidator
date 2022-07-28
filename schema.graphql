@@ -1,9 +1,12 @@
 type StakerEntity @entity {
 	id: ID!
 	count: BigInt!
-	account: Bytes! # address
-	deadline: BigInt # uint256
-	time: BigInt # uint256
-	flagged: Boolean # is Staker flagged for liquidation
-	from: Bytes! # address, latest transaction initiator
+	account: Bytes!
+	timestamp: BigInt!
+
+	"is Staker flagged for liquidation"
+	flagged: Boolean!
+
+	"address that flagged or unflagged account for liquidation or liquidated the account"
+	from: Bytes!
 }

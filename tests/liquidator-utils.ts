@@ -7,6 +7,7 @@ import {
 	OwnerChanged,
 	OwnerNominated,
 } from '../generated/Liquidator/Liquidator';
+import { AccountLiquidated } from '../generated/Synthetix/Synthetix';
 
 export function createAccountFlaggedForLiquidationEvent(
 	account: Address,
@@ -86,4 +87,30 @@ export function createOwnerNominatedEvent(newOwner: Address): OwnerNominated {
 	);
 
 	return ownerNominatedEvent;
+}
+
+export function createAccountLiquidatedEvent(
+	account: Address,
+	snxRedeemed: BigInt,
+	amountLiquidated: BigInt,
+	liquidator: Address
+): AccountLiquidated {
+	let accountLiquidatedEvent = changetype<AccountLiquidated>(newMockEvent());
+
+	accountLiquidatedEvent.parameters = new Array();
+
+	accountLiquidatedEvent.parameters.push(
+		new ethereum.EventParam('account', ethereum.Value.fromAddress(account))
+	);
+	accountLiquidatedEvent.parameters.push(
+		new ethereum.EventParam('snxRedeemed', ethereum.Value.fromUnsignedBigInt(snxRedeemed))
+	);
+	accountLiquidatedEvent.parameters.push(
+		new ethereum.EventParam('amountLiquidated', ethereum.Value.fromUnsignedBigInt(amountLiquidated))
+	);
+	accountLiquidatedEvent.parameters.push(
+		new ethereum.EventParam('liquidator', ethereum.Value.fromAddress(liquidator))
+	);
+
+	return accountLiquidatedEvent;
 }

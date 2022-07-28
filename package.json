@@ -2,6 +2,7 @@
 	"name": "liquidator-optimism",
 	"license": "UNLICENSED",
 	"scripts": {
+		"test": "graph test",
 		"create-local": "graph create --node http://localhost:8020/ noisekit/liquidator",
 		"remove-local": "graph remove --node http://localhost:8020/ noisekit/liquidator",
 		"deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 noisekit/liquidator",

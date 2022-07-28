@@ -33,3 +33,23 @@ dataSources:
         - event: OwnerNominated(address)
           handler: handleOwnerNominated
       file: ./src/liquidator.ts
+
+  - kind: ethereum
+    name: Synthetix
+    network: optimism
+    source:
+      address: '0xFE8E48Bf36ccC3254081eC8C65965D1c8b2E744D'
+      abi: Synthetix
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - AccountLiquidated
+      abis:
+        - name: Synthetix
+          file: ./abis/Synthetix.json
+      eventHandlers:
+        - event: AccountLiquidated(indexed address,uint256,uint256,address)
+          handler: handleAccountLiquidated
+      file: ./src/liquidator.ts
