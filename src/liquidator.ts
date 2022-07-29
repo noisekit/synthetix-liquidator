@@ -10,64 +10,70 @@ import { AccountLiquidated } from '../generated/Synthetix/Synthetix';
 import { StakerEntity } from '../generated/schema';
 
 export function handleAccountFlaggedForLiquidation(event: AccountFlaggedForLiquidation): void {
-	let entity = StakerEntity.load(event.params.account.toHex());
+	let staker = StakerEntity.load(event.params.account.toHex());
 
-	if (!entity) {
-		entity = new StakerEntity(event.params.account.toHex());
-		entity.count = BigInt.fromI32(0);
+	if (!staker) {
+		staker = new StakerEntity(event.params.account.toHex());
+		staker.count = BigInt.fromI32(0);
 	}
-	entity.count = BigInt.fromI32(1).plus(entity.count);
+	staker.count = BigInt.fromI32(1).plus(staker.count);
 
 	// Flag Staker for liquidation
-	entity.status = 'FLAGGED';
+	staker.status = 'FLAGGED';
 
-	entity.account = event.params.account;
-	entity.timestamp = event.params.deadline;
-	entity.from = event.transaction.from;
+	staker.account = event.params.account;
+	staker.timestamp = event.params.deadline;
+	staker.from = event.transaction.from;
 
-	entity.save();
+	staker.tx = event.transaction.hash;
+
+	staker.save();
 }
 
 export function handleAccountRemovedFromLiquidation(event: AccountRemovedFromLiquidation): void {
-	let entity = StakerEntity.load(event.params.account.toHex());
+	let staker = StakerEntity.load(event.params.account.toHex());
 
-	if (!entity) {
-		entity = new StakerEntity(event.params.account.toHex());
-		entity.count = BigInt.fromI32(0);
+	if (!staker) {
+		staker = new StakerEntity(event.params.account.toHex());
+		staker.count = BigInt.fromI32(0);
 	}
-	entity.count = BigInt.fromI32(1).plus(entity.count);
+	staker.count = BigInt.fromI32(1).plus(staker.count);
 
 	// Unflag Staker for liquidation
-	entity.status = 'CLEAR';
+	staker.status = 'CLEAR';
 
-	entity.account = event.params.account;
-	entity.timestamp = event.params.time;
-	entity.from = event.transaction.from;
+	staker.account = event.params.account;
+	staker.timestamp = event.params.time;
+	staker.from = event.transaction.from;
 
-	entity.save();
+	staker.tx = event.transaction.hash;
+
+	staker.save();
 }
 
 export function handleAccountLiquidated(event: AccountLiquidated): void {
-	let entity = StakerEntity.load(event.params.account.toHex());
+	let staker = StakerEntity.load(event.params.account.toHex());
 
-	if (!entity) {
-		entity = new StakerEntity(event.params.account.toHex());
-		entity.count = BigInt.fromI32(0);
+	if (!staker) {
+		staker = new StakerEntity(event.params.account.toHex());
+		staker.count = BigInt.fromI32(0);
 	}
-	entity.count = BigInt.fromI32(1).plus(entity.count);
+	staker.count = BigInt.fromI32(1).plus(staker.count);
 
 	// Liquidated account can not be flagged anymore
 	if (event.params.liquidator == event.params.account) {
-		entity.status = 'SELF_LIQUIDATED';
+		staker.status = 'SELF_LIQUIDATED';
 	} else {
-		entity.status = 'LIQUIDATED';
+		staker.status = 'LIQUIDATED';
 	}
 
-	entity.account = event.params.account;
-	entity.timestamp = event.block.timestamp;
-	entity.from = event.params.liquidator;
+	staker.account = event.params.account;
+	staker.timestamp = event.block.timestamp;
+	staker.from = event.params.liquidator;
 
-	entity.save();
+	staker.tx = event.transaction.hash;
+
+	staker.save();
 }
 
 export function handleCacheUpdated(event: CacheUpdated): void {}

@@ -6,6 +6,7 @@ enum STATUS {
 }
 type StakerEntity @entity {
 	id: ID!
+	tx: Bytes!
 	count: BigInt!
 	account: Bytes!
 	timestamp: BigInt!
