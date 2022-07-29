@@ -17,3 +17,12 @@ type StakerEntity @entity {
 	"address that flagged or unflagged account for liquidation or liquidated the account"
 	from: Bytes!
 }
+
+type LiquidationEvent @entity {
+	id: ID!
+	tx: Bytes!
+	account: Bytes!
+	timestamp: BigInt!
+	status: STATUS!
+	from: Bytes!
+}
