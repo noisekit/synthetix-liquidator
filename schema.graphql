@@ -1,3 +1,9 @@
+enum STATUS {
+	FLAGGED
+	CLEAR
+	LIQUIDATED
+	SELF_LIQUIDATED
+}
 type StakerEntity @entity {
 	id: ID!
 	count: BigInt!
@@ -5,7 +11,7 @@ type StakerEntity @entity {
 	timestamp: BigInt!
 
 	"is Staker flagged for liquidation"
-	flagged: Boolean!
+	status: STATUS!
 
 	"address that flagged or unflagged account for liquidation or liquidated the account"
 	from: Bytes!

@@ -19,7 +19,7 @@ export function handleAccountFlaggedForLiquidation(event: AccountFlaggedForLiqui
 	entity.count = BigInt.fromI32(1).plus(entity.count);
 
 	// Flag Staker for liquidation
-	entity.flagged = true;
+	entity.status = 'FLAGGED';
 
 	entity.account = event.params.account;
 	entity.timestamp = event.params.deadline;
@@ -38,7 +38,7 @@ export function handleAccountRemovedFromLiquidation(event: AccountRemovedFromLiq
 	entity.count = BigInt.fromI32(1).plus(entity.count);
 
 	// Unflag Staker for liquidation
-	entity.flagged = false;
+	entity.status = 'CLEAR';
 
 	entity.account = event.params.account;
 	entity.timestamp = event.params.time;
@@ -57,7 +57,11 @@ export function handleAccountLiquidated(event: AccountLiquidated): void {
 	entity.count = BigInt.fromI32(1).plus(entity.count);
 
 	// Liquidated account can not be flagged anymore
-	entity.flagged = false;
+	if (event.params.liquidator == event.params.account) {
+		entity.status = 'SELF_LIQUIDATED';
+	} else {
+		entity.status = 'LIQUIDATED';
+	}
 
 	entity.account = event.params.account;
 	entity.timestamp = event.block.timestamp;
